@@ -39,3 +39,93 @@
 
 	序列化是为了解决对象流读写操作时可能引发的问题（不进行序列化，可能引起数据混乱）。序列化除了能够实现对象的持久化外，还能够用于对象的深度克隆。
 
+9.view 的绘制流程
+	
+	[http://blog.csdn.net/yanbober/article/details/46128379/](http://blog.csdn.net/yanbober/article/details/46128379/ "Android 应用层view的绘制流程")
+
+	整个绘制流程是在viewroot中的performTraversals（）执行
+			private void performTraversals() {
+				......
+				//最外层的根视图的widthMeasureSpec和heightMeasureSpec由来
+				//lp.width和lp.height在创建ViewGroup实例时等于MATCH_PARENT
+				int childWidthMeasureSpec = getRootMeasureSpec(mWidth, lp.width);
+				int childHeightMeasureSpec = getRootMeasureSpec(mHeight, lp.height);
+				......
+				mView.measure(childWidthMeasureSpec, childHeightMeasureSpec);//测量
+				......
+				mView.layout(0, 0, mView.getMeasuredWidth(), mView.getMeasuredHeight());//布局
+				......
+				mView.draw(canvas);//绘制
+				......
+			}
+
+		这里出现一个问题，getWidth/Height() and getMeasuredWidth/Height()有什么区别？
+
+		getWidth():View在設定好佈局後整個View的宽度。
+		getMeasuredWidth():對View上的內容進行測量後得到的View內容占据的宽度 ，包括影藏的布局
+		
+		Draw过程   public void draw(Canvas canvas) {
+						        ......
+						        /*
+						         * Draw traversal performs several drawing steps which must be executed
+						         * in the appropriate order:  视图的绘制流程
+						         *
+						         *      1. Draw the background   1，背景
+						         *      2. If necessary, save the canvas' layers to prepare for fading
+						         *      3. Draw view's content  
+						         *      4. Draw children  
+						         *      5. If necessary, draw the fading edges and restore layers  5，阴影
+						         *      6. Draw decorations (scrollbars for instance)   6，装饰
+						         */
+						
+						        // Step 1, draw the background, if needed
+						        ......
+						        if (!dirtyOpaque) {
+						            drawBackground(canvas);
+						        }
+						
+						        // skip step 2 & 5 if possible (common case)
+						        ......
+						
+						        // Step 2, save the canvas' layers
+						        ......
+						            if (drawTop) {
+						                canvas.saveLayer(left, top, right, top + length, null, flags);
+						            }
+						        ......
+						
+						        // Step 3, draw the content
+						        if (!dirtyOpaque) onDraw(canvas);
+						
+						        // Step 4, draw the children
+						        dispatchDraw(canvas);
+						
+						        // Step 5, draw the fade effect and restore layers
+						        ......
+						        if (drawTop) {
+						            matrix.setScale(1, fadeHeight * topFadeStrength);
+						            matrix.postTranslate(left, top);
+						            fade.setLocalMatrix(matrix);
+						            p.setShader(fade);
+						            canvas.drawRect(left, top, right, top + length, p);
+						        }
+						        ......
+						
+						        // Step 6, draw decorations (scrollbars)
+						        onDrawScrollBars(canvas);
+						        ......
+						    }
+
+
+10. 安卓中的动画
+
+	3.0以前只有2中  3.0之后3中 帧动画，补间动画（视图动画），属性动画
+
+11. aidl  安卓接口定义语言
+	
+	[http://blog.csdn.net/lmj623565791/article/details/38377229](http://blog.csdn.net/lmj623565791/article/details/38377229)
+	
+12.Android binder机制原理 
+	[http://blog.csdn.net/boyupeng/article/details/47011383](http://blog.csdn.net/boyupeng/article/details/47011383)
+
+		Binder是Android系统进程间通信（IPC）方式之一。Linux已经拥有的进程间通信IPC手段包括(Internet Process Connection)： 管道（Pipe）、信号（Signal）和跟踪（Trace）、插口（Socket）、报文队列（Message）、共享内存（Share Memory）和信号量（Semaphore）。
