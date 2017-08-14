@@ -129,3 +129,20 @@
 	[http://blog.csdn.net/boyupeng/article/details/47011383](http://blog.csdn.net/boyupeng/article/details/47011383)
 
 		Binder是Android系统进程间通信（IPC）方式之一。Linux已经拥有的进程间通信IPC手段包括(Internet Process Connection)： 管道（Pipe）、信号（Signal）和跟踪（Trace）、插口（Socket）、报文队列（Message）、共享内存（Share Memory）和信号量（Semaphore）。
+
+13.ANR 及如何避免	
+	
+	三种事件类型： a:按键或者触摸事件  5s   b: 广播 10s  c:服务20s
+	关键：避免在ui线程做复杂操作或者计算
+	定位：。。/data/and/traces.txt
+
+14. android 系统架构 
+
+	linux kernel   lib dalvik vm   application framework  app
+
+15.framework工作原理 ，activity是如何生成一个view的，机制是什么
+	
+	Framework是android 系统对 linux kernel，lib库等封装，提供WMS，AMS，bind机制，handler-message机制等方式，供app使用。简单来说framework就是提供app生存的环境。
+		1）Activity在attch方法的时候，会创建一个phonewindow（window的子类）	
+		2）onCreate中的setContentView方法，会创建DecorView
+		3）DecorView 的addview方法，会把layout中的布局加载进来。
