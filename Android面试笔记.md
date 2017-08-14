@@ -146,3 +146,17 @@
 		1）Activity在attch方法的时候，会创建一个phonewindow（window的子类）	
 		2）onCreate中的setContentView方法，会创建DecorView
 		3）DecorView 的addview方法，会把layout中的布局加载进来。
+
+
+16.HashMap和HashTable 
+	
+	HashTable 1.1  线程安全，不允许null
+	HashMap   1.2  key和value允许null值
+	HashMap把Hashtable的contains方法去掉了，改成containsvalue和containsKey。因为contains方法容易让人引起误解
+
+17.A activity 启动 B activity的生命周期（[http://www.jianshu.com/p/cb5c4e5598ed](http://www.jianshu.com/p/cb5c4e5598ed)）
+	
+	很多人在使用startActivityForResult启动一个Activity时，会发现还没有开始界面跳转本身的onActivityResult马上就被执行了，这是为什么呢？（* <p>Note that this method should only be used with Intent protocols * that are defined to return a result. In other protocols (such as * {@link Intent#ACTION_MAIN} or {@link Intent#ACTION_VIEW}), you may * not get the result when you expect. For example, if the activity you * are launching uses the singleTask launch mode, it will not run in your * task and thus you will immediately receive a cancel result.）
+
+
+	
